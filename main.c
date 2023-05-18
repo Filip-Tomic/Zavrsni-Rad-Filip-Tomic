@@ -1,14 +1,22 @@
+
 #define _CRT_SECURE_NO_WARNINGS
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include"header.h"
+//Koristenje obveznih koncepata
+//koristenje camelCase
+//10.
+//8.
+//16.
+//6.
+//4.
 
 int main() {
-	int izbor;
+	int izbor; 
 	do {
-		ispisIzbornika();
+		ispisIzbornika(); //8
 		scanf("%d", &izbor);
 		switch (izbor) {
 		case 1:
