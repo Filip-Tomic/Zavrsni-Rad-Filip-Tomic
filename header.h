@@ -5,7 +5,7 @@ typedef struct student {
 	int id;
 	char ime[20];
 	char prezime[20];
-	int brojSobe;
+	char brojSobe[10];
 	char datumRodenja[20];
 	char spol[2];
 	char adresa[100];
