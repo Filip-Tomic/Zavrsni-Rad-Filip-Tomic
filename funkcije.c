@@ -8,7 +8,7 @@
 
 
 void ispisIzbornika() {
-	printf("BAZA PODATAKA ZA STUDENTSKI DOM\n");
+	printf("\nBAZA PODATAKA ZA STUDENTSKI DOM\n");
 	printf("Unesite radnju\n");
 	printf("1. Pregled svih studenata (abecedno)\n");
 	printf("2. Pregled svih studenata (po broju sobe)\n");
@@ -31,20 +31,38 @@ void dodajStudenta() {
 	STUDENT c;
 	printf("\nUnesite ime studenta: ");
 	scanf("%s", c.ime);
+	fprintf(pokazivacDatoteke, c.ime);
+	fprintf(pokazivacDatoteke, "\n");																										
 	printf("\nUnesite prezime studenta: ");
 	scanf("%s", c.prezime);
+	fprintf(pokazivacDatoteke, c.prezime);
+	fprintf(pokazivacDatoteke, "\n");
+
 	printf("\nBroj sobe: ");
-	scanf("%d", &c.brojSobe);
+	scanf("%s", c.brojSobe);
+	fprintf(pokazivacDatoteke, c.brojSobe);
+	fprintf(pokazivacDatoteke, "\n");
+
 	printf("\nDatum rodenja: ");
 	scanf("%s", c.datumRodenja);
+	fprintf(pokazivacDatoteke, c.datumRodenja);
+	fprintf(pokazivacDatoteke, "\n");
+
 	printf("\nSpol (M/Z): ");
 	scanf("%s", c.spol);
+	fprintf(pokazivacDatoteke, c.spol);
+	fprintf(pokazivacDatoteke, "\n");
+
 	printf("\nAdresa: ");
 	scanf("%s", c.adresa);
+	fprintf(pokazivacDatoteke, c.adresa);
+	fprintf(pokazivacDatoteke, "\n");
+		
 	printf("\nKontakt: ");
 	scanf("%s", c.kontakt);
-	srand((unsigned)time(NULL));
-	fwrite(&c, sizeof(c), 1, pokazivacDatoteke);
+	fprintf(pokazivacDatoteke, c.kontakt);
+	fprintf(pokazivacDatoteke, "\n");
+	fprintf(pokazivacDatoteke, "\n");
 
 	fclose(pokazivacDatoteke);
 	printf("Student uspijesno dodan\n");
@@ -59,42 +77,48 @@ void ispisiStudente() {
 	}
 	STUDENT c;
 
-	int brojClanova = 0;
-	while (fread(&c, sizeof(c), 1, pokazivacDatoteke)) {
-		printf("\nIme:%s\nPrezime:%s\nBroj sobe:%d\nDatum rodenja:%s\nSpol:%s\nAdresa:%s\nKontakt:%s\n",c.ime, c.prezime, c.brojSobe, c.datumRodenja,c.spol, c.adresa, c.kontakt);
-		brojClanova++;
-		
-	}
-	printf("\nUkupno clanova: %d\n", brojClanova);
-	fclose(pokazivacDatoteke);
-}
-void pronadiStudenta() {
-
-	char trazenjeIme[20];
-	printf("Unesite ime clana kojeg zelite pronaci: ");
-	scanf("%s", &trazenjeIme);
-
+					
+	static char citanjeDatoteke[5000];
+	while (!feof(pokazivacDatoteke))
+	{								
+		fgets(citanjeDatoteke, 5000, pokazivacDatoteke);
+		puts(citanjeDatoteke);		
+	}								
+	
+	fclose(pokazivacDatoteke);		
+}									
+void pronadiStudenta() {			
+										
+	int trazenjePoBrojuSobe;		
+	printf("Unesite broj sobe clana kojeg zelite pronaci: ");
+	scanf("%d", &trazenjePoBrojuSobe);
+									
 	FILE* pokazivacDatoteke = fopen("studenti.txt", "r"); //16
 	if (pokazivacDatoteke == NULL) {
-
+									
 		printf("Ne mogu otvoriti dadoteku\n");
-		return;
-	}
-	
-	STUDENT c;
-	int usporedivanjeStringova = strcmp(c.ime, trazenjeIme);
-	int pronaden = 0;
-	while (fread(&c, sizeof(c), 1, pokazivacDatoteke)) {
-		if (usporedivanjeStringova == 0) {
+		return;						
+	}								
+									
+	STUDENT c;						
+									
+	int usporedivanjeSoba = 1;		
+	int pronaden = 0;				
+	if (trazenjePoBrojuSobe == c.brojSobe)
+		usporedivanjeSoba = 0;		
+									
+									
+	while (!feof(pokazivacDatoteke)) {
+		if (usporedivanjeSoba == 0) {
 			printf("Pronaden clan:\n");
-			printf("Ime: %s\nPrezime: %s\nBroj sobe: %d\nDatum rodenja: %s\nSpol: %s\nAdresa: %s\nKontakt: %s\n", c.ime,c.prezime, c.brojSobe, c.datumRodenja, c.spol, c.adresa, c.kontakt);
+			printf("Ime: %s\nPrezime: %s\nBroj sobe: %s\nDatum rodenja: %s\nSpol: %s\nAdresa: %s\nKontakt: %s\n", c.ime, c.prezime, c.brojSobe, c.datumRodenja, c.spol, c.adresa, c.kontakt);
 			pronaden = 1;
 			break;
 		}
 	}
 
 	if (!pronaden) {
-		printf("Nema studenta u domu s imenom %s\n", trazenjeIme);
+		printf("Nema studenta u domu s brojem sobe %d\n", trazenjePoBrojuSobe);
 	}
 	fclose(pokazivacDatoteke);
 }
@@ -106,7 +130,37 @@ void uredivanjeStudenata()
 {
 
 }
-void brisanjeStudenata()
-{
+void brisanjeStudenata() {
+	char imeDat[] = "studenti.txt";
+	char imeZaObrisat[20];
 
+	printf("Unesite ime studenta kojega zelite izbrisati: ");
+	scanf("%s", imeZaObrisat);
+
+	FILE* fp = fopen(imeDat, "r+");
+	if (fp == NULL) {
+		printf("Ne moze se otvoriti datoteka %s\n", imeDat);
+		return 1;
+	}
+
+	
+	char tempFilename[] = "temp.txt";
+	FILE* tempFp = fopen(tempFilename, "w");
+	char line[100];
+	while (fgets(line, 100, fp) != NULL) {
+		char* token = strtok(line, ",");
+		if (strcmp(token, imeZaObrisat) != 0) {
+			fputs(line, tempFp);
+		}
+	}
+
+	
+	fclose(fp);
+	fclose(tempFp);
+
+	
+	remove(imeDat);
+	rename(tempFilename, imeDat);
+
+	printf("Student %s je usijesno obrisan iz datoteke.\n", imeZaObrisat);
 }
