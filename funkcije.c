@@ -1,166 +1,504 @@
 #define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h> //7 
 #include <stdlib.h>
-#include <stdio.h>
-#include <math.h>
-#include <time.h>
+#include "Header.h"
 #include <string.h>
-#include"header.h"
 
+//Obavezni koncepti
+//4 upotreba camelCase
+//6
 
-void ispisIzbornika() {
-	printf("\nBAZA PODATAKA ZA STUDENTSKI DOM\n");
-	printf("Unesite radnju\n");
-	printf("1. Pregled svih studenata (abecedno)\n");
-	printf("2. Pregled svih studenata (po broju sobe)\n");
-	printf("3. Pronadi studenta po imenu\n");
-	printf("4. Pronadi studenta po broju sobe (1-50)\n");
-	printf("5. Popis slobodnih soba\n");
-	printf("6. Dodavanje novih studenata\n");
-	printf("7. Uredivanje postojecih studenata\n");
-	printf("8. Brisanje studenata\n");
+void kreiranje(char* datoteka, unsigned int* BrojStudenata) { //9
 
-}
+	FILE* fp = fopen(datoteka, "rb");
 
-
-void dodajStudenta() {
-	FILE* pokazivacDatoteke = fopen("studenti.txt", "a"); //16
-	if (pokazivacDatoteke == NULL) {
-		printf("Ne mogu otvoriti dadoteku\n");
-		return;
-	}
-	STUDENT c;
-	printf("\nUnesite ime studenta: ");
-	scanf("%s", c.ime);
-	fprintf(pokazivacDatoteke, c.ime);
-	fprintf(pokazivacDatoteke, "\n");																										
-	printf("\nUnesite prezime studenta: ");
-	scanf("%s", c.prezime);
-	fprintf(pokazivacDatoteke, c.prezime);
-	fprintf(pokazivacDatoteke, "\n");
-
-	printf("\nBroj sobe: ");
-	scanf("%s", c.brojSobe);
-	fprintf(pokazivacDatoteke, c.brojSobe);
-	fprintf(pokazivacDatoteke, "\n");
-
-	printf("\nDatum rodenja: ");
-	scanf("%s", c.datumRodenja);
-	fprintf(pokazivacDatoteke, c.datumRodenja);
-	fprintf(pokazivacDatoteke, "\n");
-
-	printf("\nSpol (M/Z): ");
-	scanf("%s", c.spol);
-	fprintf(pokazivacDatoteke, c.spol);
-	fprintf(pokazivacDatoteke, "\n");
-
-	printf("\nAdresa: ");
-	scanf("%s", c.adresa);
-	fprintf(pokazivacDatoteke, c.adresa);
-	fprintf(pokazivacDatoteke, "\n");
-		
-	printf("\nKontakt: ");
-	scanf("%s", c.kontakt);
-	fprintf(pokazivacDatoteke, c.kontakt);
-	fprintf(pokazivacDatoteke, "\n");
-	fprintf(pokazivacDatoteke, "\n");
-
-	fclose(pokazivacDatoteke);
-	printf("Student uspijesno dodan\n");
-}
-
-
-void ispisiStudente() {
-	FILE* pokazivacDatoteke = fopen("studenti.txt", "r"); //16
-	if (pokazivacDatoteke == NULL) {
-		printf("Ne mogu otvoriti dadoteku\n");
-		return;
-	}
-	STUDENT c;
-
-					
-	static char citanjeDatoteke[5000];
-	while (!feof(pokazivacDatoteke))
-	{								
-		fgets(citanjeDatoteke, 5000, pokazivacDatoteke);
-		puts(citanjeDatoteke);		
-	}								
-	
-	fclose(pokazivacDatoteke);		
-}									
-void pronadiStudenta() {			
-										
-	int trazenjePoBrojuSobe;		
-	printf("Unesite broj sobe clana kojeg zelite pronaci: ");
-	scanf("%d", &trazenjePoBrojuSobe);
-									
-	FILE* pokazivacDatoteke = fopen("studenti.txt", "r"); //16
-	if (pokazivacDatoteke == NULL) {
-									
-		printf("Ne mogu otvoriti dadoteku\n");
-		return;						
-	}								
-									
-	STUDENT c;						
-									
-	int usporedivanjeSoba = 1;		
-	int pronaden = 0;				
-	if (trazenjePoBrojuSobe == c.brojSobe)
-		usporedivanjeSoba = 0;		
-									
-									
-	while (!feof(pokazivacDatoteke)) {
-		if (usporedivanjeSoba == 0) {
-			printf("Pronaden clan:\n");
-			printf("Ime: %s\nPrezime: %s\nBroj sobe: %s\nDatum rodenja: %s\nSpol: %s\nAdresa: %s\nKontakt: %s\n", c.ime, c.prezime, c.brojSobe, c.datumRodenja, c.spol, c.adresa, c.kontakt);
-			pronaden = 1;
-			break;
-		}
-	}
-
-	if (!pronaden) {
-		printf("Nema studenta u domu s brojem sobe %d\n", trazenjePoBrojuSobe);
-	}
-	fclose(pokazivacDatoteke);
-}
-void popisSlobodnihSoba()
-{
-
-}
-void uredivanjeStudenata()
-{
-
-}
-void brisanjeStudenata() {
-	char imeDat[] = "studenti.txt";
-	char imeZaObrisat[20];
-
-	printf("Unesite ime studenta kojega zelite izbrisati: ");
-	scanf("%s", imeZaObrisat);
-
-	FILE* fp = fopen(imeDat, "r+");
 	if (fp == NULL) {
-		printf("Ne moze se otvoriti datoteka %s\n", imeDat);
-		return 1;
-	}
 
-	
-	char tempFilename[] = "temp.txt";
-	FILE* tempFp = fopen(tempFilename, "w");
-	char line[100];
-	while (fgets(line, 100, fp) != NULL) {
-		char* token = strtok(line, ",");
-		if (strcmp(token, imeZaObrisat) != 0) {
-			fputs(line, tempFp);
+		perror("File"); //19
+
+		fp = fopen(datoteka, "wb");
+
+		if (fp == NULL) {
+
+			perror("File");
+			exit(EXIT_FAILURE);
+		}
+		else {
+
+			fwrite(BrojStudenata, sizeof(unsigned int), 1, fp);
+			fclose(fp);
+			printf("Datoteka usijesno kreirana!\n");
+		}
+	}
+	else {
+
+		fread(BrojStudenata, sizeof(unsigned int), 1, fp);
+		fclose(fp);
+		printf("Datoteka postoji\n");
+	}
+}
+
+void pocetniIzbornik() { //8
+	printf("BAZA PODATAKA ZA STUDENTSKI DOM\n");
+	printf("Izaberite opciju\n");
+	printf("[1] Dodaj studenta\n");
+	printf("[2] Pregled svih studenata\n");
+	printf("[3] Pretrazi studenta\n");
+	printf("[4] Uredi studenta\n");
+	printf("[5] Izbrisi sve studente\n");
+	printf("[6] Pregled svih studenata poredano abecedno po imenu:\n");
+	printf("[0] Izlaz\n");
+	printf("Odabir: ");
+}
+
+void dodajStudenta(char* datoteka, unsigned int* STUDENTNumber) {
+
+	FILE* fp = NULL;
+
+	fp = fopen(datoteka, "rb+");
+
+	if (fp == NULL) {
+		perror("Izbornik 1 - dodaj studente");
+		exit(EXIT_FAILURE);
+	}
+	//datoteka otvorena
+	else {
+		STUDENT privremeniStudent = { 0 }; //10
+		printf("Ime: \n");
+		scanf(" %50[^\n]", privremeniStudent.Ime); //3
+		printf("Prezime: \n");
+		scanf(" %50[^\n]", privremeniStudent.Prezime);
+		printf("Broj mobitela studenta:\n");
+		scanf(" %30[^\n]", privremeniStudent.brojMobitela);
+		printf("Broj mobitela:\n");
+		char privremeniBroj[10] = { '\0' }; //12
+		scanf("%9s", privremeniBroj);
+		strcpy(privremeniStudent.brojSobe, "");
+		strcat(privremeniStudent.brojSobe, privremeniBroj);
+		privremeniStudent.brojac = (*STUDENTNumber)++;
+
+		fseek(fp, sizeof(unsigned int) + ((*STUDENTNumber - 1) * sizeof(STUDENT)), SEEK_SET);
+		fwrite(&privremeniStudent, sizeof(STUDENT), 1, fp);
+		rewind(fp);
+		fwrite(STUDENTNumber, sizeof(unsigned int), 1, fp);
+		fclose(fp);
+	}
+}
+
+
+void ispisiStudente(char* datoteka, unsigned int* STUDENTNumber) {
+
+	FILE* fpRead = NULL;
+	fpRead = fopen(datoteka, "rb");
+
+	if (fpRead == NULL) {
+
+		perror("Izbornik 2 - procitaj datoteku");
+		exit(EXIT_FAILURE);
+	}
+	//datoteka otvorena
+	else {
+
+		STUDENT* sviStudenti = NULL;
+
+		fread(STUDENTNumber, sizeof(unsigned int), 1, fpRead);
+
+		if (*STUDENTNumber == 0) {
+
+			printf("Nema unesenih studenata!\n");
+			fclose(fpRead);
+			return;
+		}
+		//ako ima studenata
+		else {
+			sviStudenti = (STUDENT*)calloc(*STUDENTNumber, sizeof(STUDENT)); //13
+
+			if (sviStudenti == NULL) {
+
+				perror("Citanje svih studenata:(");
+				exit(EXIT_FAILURE);
+			}
+			//uspjesno zauzimanje memorije
+			else {
+				fread(sviStudenti, sizeof(STUDENT), *STUDENTNumber, fpRead);
+				fclose(fpRead);
+
+				unsigned int i;
+				//prikaz studenata
+				for (i = 0; i < *STUDENTNumber; i++)
+				{
+					printf("%u\t", (sviStudenti + i)->brojac);
+					printf("Ime: %s, ", (sviStudenti + i)->Ime);
+					printf("Prezime: %s, ", (sviStudenti + i)->Prezime);
+					printf("Broj mobitela: %s, ", (sviStudenti + i)->brojMobitela);
+					printf("Broj sobe: %s\n", (sviStudenti + i)->brojSobe);
+
+				}
+				free(sviStudenti);
+			}
+		}
+	}
+}
+
+void pronalazenjeStudenta(char* datoteka, unsigned int* STUDENTNumber) { 
+	FILE* fpSearch = NULL;
+	fpSearch = fopen(datoteka, "rb");
+
+	if (fpSearch == NULL) {
+
+		perror("Izbornik 3 - Pretrazi studenta");
+		return;
+
+	}
+	//datoteka otvorena
+	else {
+		STUDENT* sviStudenti = NULL;
+
+		fread(STUDENTNumber, sizeof(unsigned int), 1, fpSearch);
+
+		if (*STUDENTNumber == 0) {
+
+			printf("Nema unesenih studenata!\n");
+			fclose(fpSearch);
+			return;
+		}
+		//ima studenata
+		else {
+			sviStudenti = (STUDENT*)calloc(*STUDENTNumber, sizeof(STUDENT)); //14
+
+			if (sviStudenti == NULL) {
+
+				perror("Citanje svih studenata");
+				exit(EXIT_FAILURE);
+			}
+			//uspjesno zauzeto
+			else {
+				fread(sviStudenti, sizeof(STUDENT), *STUDENTNumber, fpSearch);
+				fclose(fpSearch);
+				unsigned int search;
+				unsigned int i;
+				printf("Pretrazi pomocu imena[1] ili broja sobe[2]?\n");
+				scanf("%u", &search);
+
+				//Ime ili broj sobe
+				switch (search) {
+				case 1:
+
+					printf("Unesite ime\n");
+					char privremenoIme[51] = { '\0' };
+					scanf(" %50[^\n]", privremenoIme);
+					unsigned int statusIme = 0;
+					unsigned int indeksIme = -1;
+
+					//usporedivanje stringa
+					for (i = 0; i < *STUDENTNumber; i++)
+					{
+						if (!strcmp((sviStudenti + i)->Ime, privremenoIme)) { //21
+							statusIme = 1;
+							indeksIme = i;
+						}
+					}
+
+					if (statusIme)
+					{
+						printf("\nStudent pronaden!\n");
+
+						printf("Ime: %s\n", (sviStudenti + indeksIme)->Ime);
+						printf("Prezime: %s\n", (sviStudenti + indeksIme)->Prezime);
+						printf("Broj mobitela: %s\n", (sviStudenti + indeksIme)->brojMobitela);
+						printf("Broj sobe: %s\n\n", (sviStudenti + indeksIme)->brojSobe);
+					}
+					else
+					{
+						printf("Student nije u bazi podataka\n");
+					}
+					break;
+
+				case 2:
+
+					printf("Unesite broj mobitela:\n");
+					char privremeniBroj[14] = { '\0' };
+					scanf("%14s", privremeniBroj);
+					unsigned int statusBroj = 0;
+					unsigned int indeksBroj = -1;
+
+					//usporedivanje stringa
+					for (i = 0; i < *STUDENTNumber; i++)
+					{
+
+						if (!strcmp((sviStudenti + i)->brojSobe, privremeniBroj)) {
+							statusBroj = 1;
+							indeksBroj = i;
+						}
+					}
+
+					if (statusBroj)
+					{
+						printf("\nStudent pronaden\n");
+
+						printf("Ime: %s\n", (sviStudenti + indeksBroj)->Ime);
+						printf("Prezime: %s\n", (sviStudenti + indeksBroj)->Prezime);
+						printf("Broj Mobitela: %s\n", (sviStudenti + indeksBroj)->brojMobitela);
+						printf("Broj sobe: %s\n\n", (sviStudenti + indeksBroj)->brojSobe);
+					}
+					else
+					{
+						printf("Student nije u bazi podataka\n");
+					}
+					break;
+
+				default: //11
+					printf("Nevazeci unos, pokusajte ponovo!\n");
+				}
+			}
+			free(sviStudenti); //15
 		}
 	}
 
-	
-	fclose(fp);
-	fclose(tempFp);
+}
 
-	
-	remove(imeDat);
-	rename(tempFilename, imeDat);
+void izlazFunkcija(void) {
 
-	printf("Student %s je usijesno obrisan iz datoteke.\n", imeZaObrisat);
+	printf("Jeste li sigurni da zelite izaci?(D/N)\n");
+	char izbor[2] = { '\0' }; //1
+	scanf(" %s", izbor);
+	if (!strcmp("D", izbor)) {
+		exit(EXIT_FAILURE);
+	}
+	return;
+}
+
+
+void uredivanjeStudenta(char* datoteka, unsigned int* STUDENTNumber) {
+
+	FILE* fpEdit = NULL;
+	fpEdit = fopen(datoteka, "rb");
+
+	if (fpEdit == NULL) {
+
+		perror("Izbornik 2 - Citanje datoteke");
+		return;
+
+	}
+	//datoteka otvorena
+	else {
+		STUDENT* sviStudenti = NULL;
+
+		fread(STUDENTNumber, sizeof(unsigned int), 1, fpEdit);
+
+		if (*STUDENTNumber == 0) {
+
+			printf("Nema unesenih studenata!\n");
+			fclose(fpEdit);
+			return;
+		}
+		//ima studenata
+		else {
+			sviStudenti = (STUDENT*)calloc(*STUDENTNumber, sizeof(STUDENT));
+
+			if (sviStudenti == NULL) {
+				perror("Citanje svih studenata");
+				exit(EXIT_FAILURE);
+			}
+			//uspjesno zauzimanje memorije
+			else {
+				STUDENT privremeniStudent = { 0 };
+				fread(sviStudenti, sizeof(STUDENT), *STUDENTNumber, fpEdit);
+
+				unsigned int i;
+
+				printf("Unesite ime studenta:\n");
+				char privremenoIme[51] = { '\0' };
+				scanf(" %50[^\n]", privremenoIme);
+				unsigned int statusIme = 0;
+				unsigned int indeksIme = -1;
+
+				//usporedivanje stringa
+				for (i = 0; i < *STUDENTNumber; i++)
+				{
+					if (!strcmp((sviStudenti + i)->Ime, privremenoIme)) {
+						statusIme = 1;
+						indeksIme = i;
+					}
+				}
+
+				if (statusIme == 1) {
+					printf("\nStudent pronaden\n");
+
+					printf("Ime: %s\n", (sviStudenti + indeksIme)->Ime);
+					printf("Prezime: %s\n", (sviStudenti + indeksIme)->Prezime);
+					printf("Broj mobitela: %s\n", (sviStudenti + indeksIme)->brojMobitela);
+					printf("Broj sobe: %s\n\n", (sviStudenti + indeksIme)->brojSobe);
+					fclose(fpEdit);
+					fpEdit = fopen(datoteka, "rb+");
+					printf("Novo ime: \n");
+					scanf(" %50[^\n]", privremeniStudent.Ime);
+					printf("Novo prezime: \n");
+					scanf(" %50[^\n]", privremeniStudent.Prezime);
+					printf("Novi broj mobitela: \n");
+					scanf(" %50[^\n]", privremeniStudent.brojMobitela);
+					printf("Novi broj sobe: \n");
+					char privremeniBroj[10] = { '\0' };
+					scanf("%9s", privremeniBroj);
+					strcpy(privremeniStudent.brojSobe, "");
+					strcat(privremeniStudent.brojSobe, privremeniBroj);
+					privremeniStudent.brojac = indeksIme;
+
+					fseek(fpEdit, sizeof(unsigned int) + ((indeksIme) * sizeof(STUDENT)), SEEK_SET); //17
+					fwrite(&privremeniStudent, sizeof(STUDENT), 1, fpEdit);
+					rewind(fpEdit);
+					fwrite(STUDENTNumber, sizeof(unsigned int), 1, fpEdit);
+					fclose(fpEdit);
+				}
+				else {
+					printf("Student nije u bazi podataka\n");
+				}
+				free(sviStudenti);
+			}
+		}
+	}
+	fclose(fpEdit);
+}
+
+void sortiranjeImena(char* datoteka, unsigned int* STUDENTNumber) { //20
+	FILE* fpEdit = NULL;
+	fpEdit = fopen(datoteka, "rb");
+
+	if (fpEdit == NULL) {
+
+		perror("Izbornik 2 - Citanje datoteke");
+		return;
+
+	}
+	//datoteka otvorena
+	else {
+		STUDENT* sviStudenti = NULL;
+
+		fread(STUDENTNumber, sizeof(unsigned int), 1, fpEdit);
+
+		if (*STUDENTNumber == 0) {
+
+			printf("Nema unesenih studenata!\n");
+			fclose(fpEdit);
+			return;
+		}
+
+		else {
+			sviStudenti = (STUDENT*)calloc(*STUDENTNumber, sizeof(STUDENT));
+			STUDENT temp;
+			char prvoSlovo, prvoSlovoPom;
+			int min;
+			if (sviStudenti == NULL) {
+				perror("Citanje svih studenata");
+				exit(EXIT_FAILURE);
+			}
+
+			else {
+				fread(sviStudenti, sizeof(STUDENT), *STUDENTNumber, fpEdit);
+
+				for (int i = 0; i < *STUDENTNumber - 1; i++)
+				{
+					min = i;
+					prvoSlovo = (sviStudenti + i)->Ime[0] >= 'A' && (sviStudenti + i)->Ime[0] <= 'Z' ? (sviStudenti + i)->Ime[0] : (sviStudenti + i)->Ime[0] - 32;
+					for (int j = i + 1; j < *STUDENTNumber; j++)
+					{
+						prvoSlovoPom = (sviStudenti + j)->Ime[0] >= 'A' && (sviStudenti + j)->Ime[0] <= 'Z' ? (sviStudenti + j)->Ime[0] : (sviStudenti + j)->Ime[0] - 32;
+						if (prvoSlovo < prvoSlovoPom)
+						{
+							min = j;
+							prvoSlovo = (sviStudenti + j)->Ime[0] >= 'A' && (sviStudenti + j)->Ime[0] <= 'Z' ? (sviStudenti + j)->Ime[0] : (sviStudenti + j)->Ime[0] - 32;
+						}
+					}
+					//zamjena Imena
+					strcpy(temp.Ime, (sviStudenti + i)->Ime);
+					strcpy((sviStudenti + i)->Ime, (sviStudenti + min)->Ime);
+					strcpy((sviStudenti + min)->Ime, temp.Ime);
+					//zamjena prezimena
+					strcpy(temp.Prezime, (sviStudenti + i)->Prezime);
+					strcpy((sviStudenti + i)->Prezime, (sviStudenti + min)->Prezime);
+					strcpy((sviStudenti + min)->Prezime, temp.Prezime);
+					//zamjena broja sobe
+					strcpy(temp.brojSobe, (sviStudenti + i)->brojSobe);
+					strcpy((sviStudenti + i)->brojSobe, (sviStudenti + min)->brojSobe);
+					strcpy((sviStudenti + min)->brojSobe, temp.brojSobe);
+					//zamjena broj mobitela
+					strcpy(temp.brojMobitela, (sviStudenti + i)->brojMobitela);
+					strcpy((sviStudenti + i)->brojMobitela, (sviStudenti + min)->brojMobitela);
+					strcpy((sviStudenti + min)->brojMobitela, temp.brojMobitela);
+				}
+
+				//ispis na ekran
+				for (int i = 0; i < *STUDENTNumber; i++)
+				{
+					printf("%u\t", (sviStudenti + i)->brojac);
+					printf("Ime: %s ", (sviStudenti + i)->Ime);
+					printf("Prezime: %s ", (sviStudenti + i)->Prezime);
+					printf("Broj mobitela: %s ", (sviStudenti + i)->brojMobitela);
+					printf("Broj sobe: %s\n", (sviStudenti + i)->brojSobe);
+				}
+				free(sviStudenti);
+			}
+		}
+	}
+}
+
+
+
+void glavniIzbornik(char* datoteka, unsigned int* STUDENTNumber) {
+	unsigned int izbor = -1;
+	static int loop = 1; //5
+	while (loop) {
+		pocetniIzbornik();
+
+		scanf("%u", &izbor);
+
+		switch (izbor) {
+
+		case 1:
+			printf("\n\t\tDodaj studenta\n\n");
+			dodajStudenta(datoteka, STUDENTNumber);
+			break;
+
+		case 2:
+			printf("\n\t\tPregled svih studenata\n\n");
+			ispisiStudente(datoteka, STUDENTNumber);
+			break;
+
+		case 3:
+			printf("\n\t\tPretrazivanje studenata\n\n");
+			pronalazenjeStudenta(datoteka, STUDENTNumber);
+			break;
+
+		case 4:
+			printf("\n\t\tUredivanje studenata\n\n");
+			uredivanjeStudenta(datoteka, STUDENTNumber);
+			break;
+
+		case 5:
+			printf("\n\t\tBrisanje svih studenata\n\n");
+			printf("Jeste li sigurni da zelite izbrisati sve studente(D/N)\n");
+			char izbor[2] = { '\0' };
+			scanf(" %s", izbor);
+			if (!strcmp("D", izbor)) {
+				remove(datoteka); //18
+				printf("Svi studenti su izbrisani, pravljenje nove datoteke!");
+				kreiranje(datoteka, STUDENTNumber);
+			}
+			break;
+
+		case 6:
+			printf("\n\t\Pregled svih studenata poredano abecedno po imenu\n\n");
+
+			sortiranjeImena(datoteka, STUDENTNumber);
+
+			break;
+		case 0:
+			printf("\nIzlaz...\n\n");
+			izlazFunkcija();
+			break;
+
+		default:
+			printf("Nevazeci unos, pokusajte ponovo!\n");
+		}
+	}
 }
