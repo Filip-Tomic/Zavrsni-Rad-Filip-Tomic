@@ -8,11 +8,11 @@
 int main(void) {
 
 	char* fp = "clanovi.bin"; //16
-	unsigned int STUDENTNumber = 0;
+	unsigned int brojStudenata = 0;
 
-	kreiranje(fp, &STUDENTNumber); //10
+	kreiranje(fp, &brojStudenata); //10
 
-	glavniIzbornik(fp, &STUDENTNumber);
+	glavniIzbornik(fp, &brojStudenata);
 
 	return 0;
 }
