@@ -12,5 +12,12 @@ typedef struct student { //2 //3
 
 void kreiranje(char* datoteka, unsigned int* pBrojStudenata);
 void glavniIzbornik(char* datoteka, unsigned int* BrojStudenata);
+void pocetniIzbornik();
+void dodajStudenta(char* datoteka, unsigned int* brojStudenata);
+void ispisiStudente(char* datoteka, unsigned int* brojStudenata);
+void pronalazenjeStudenta(char* datoteka, unsigned int* brojStudenata);
+void uredivanjeStudenta(char* datoteka, unsigned int* brojStudenata);
+void sortiranjeImena(char* datoteka, unsigned int* brojStudenata);
+void izlazFunkcija(void);
 
-#endif 
+#endif
