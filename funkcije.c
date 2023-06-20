@@ -260,8 +260,15 @@ void pronalazenjeStudenta(char* datoteka, unsigned int* brojStudenata) {
 				unsigned int search;
 				unsigned int i;
 				printf("Pretrazi pomocu imena[1] ili broja sobe[2]?\n");
-				scanf("%u", &search);
+				do {
+					scanf("%u", &search);
+					if (search != 1 && search != 2)
+					{
+						printf("Unesite [1] ili [2]!\n");
+					}
+				} while (search != 1 && search != 2);
 
+				
 				//Ime ili broj sobe
 				switch (search) {
 				case 1:
@@ -298,7 +305,7 @@ void pronalazenjeStudenta(char* datoteka, unsigned int* brojStudenata) {
 
 				case 2:
 
-					printf("Unesite broj mobitela:\n");
+					printf("Unesite broj sobe:\n");
 					char privremeniBroj[14] = { '\0' };
 					scanf("%14s", privremeniBroj);
 					unsigned int statusBroj = 0;
