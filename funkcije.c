@@ -94,6 +94,7 @@ void glavniIzbornik(char* datoteka, unsigned int* brojStudenata) {
 
 				remove(datoteka); //18
 				printf("Svi studenti su izbrisani, pravljenje nove datoteke!");
+				*brojStudenata = 0;
 				kreiranje(datoteka, brojStudenata);
 			}
 			break;
